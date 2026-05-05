@@ -1,5 +1,11 @@
 import { formatBRL } from "../utils/formatters";
 
+
+/*TULIO SILVEIRA LODETTI*/
+
+/*TESTE*/
+
+
 export default function CoinCard({ coin, price }) {
   const change = (((price - coin.basePrice) / coin.basePrice) * 100).toFixed(2);
   const isUp = change >= 0;
