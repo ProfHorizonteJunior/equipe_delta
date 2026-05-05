@@ -79,12 +79,15 @@ export default function CryptoMonitor() {
           Atualizado em: {lastUpdated.toLocaleTimeString("pt-BR")}
         </p>
       )}
+
+
+
       <span
         onClick={() => navigate("/secrets")}
-        style={{ cursor: "default", userSelect: "none", fontSize: 1000, color: "#a81010ff" }}
+        style={{ cursor: "default", userSelect: "none", fontSize: 10, color: "#a81010ff", marginTop: 300, display: "block" }}
         title=""
       >
-        .
+        Não Clique
       </span>
     </div>
 
