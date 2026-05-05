@@ -4,6 +4,7 @@ import { formatBRL } from "../utils/formatters";
 import CoinCard from "../components/CoinCard";
 import AlertPanel from "../components/AlertPanel";
 import Notification from "../components/Notification";
+import { useNavigate } from "react-router-dom";
 
 export default function CryptoMonitor() {
   const [prices, setPrices] = useState(() =>
@@ -12,6 +13,7 @@ export default function CryptoMonitor() {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [notification, setNotification] = useState(null);
   const notifTimer = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchPrices() {
@@ -77,7 +79,16 @@ export default function CryptoMonitor() {
           Atualizado em: {lastUpdated.toLocaleTimeString("pt-BR")}
         </p>
       )}
+      <span
+        onClick={() => navigate("/secrets")}
+        style={{ cursor: "default", userSelect: "none", fontSize: 1000, color: "#a81010ff" }}
+        title=""
+      >
+        .
+      </span>
     </div>
+
+    
   );
 }
 
