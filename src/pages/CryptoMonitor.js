@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { COINS } from "../constants/coins";
-import { simulatePrice, formatBRL } from "../utils/formatters";
+import { formatBRL } from "../utils/formatters";
 import CoinCard from "../components/CoinCard";
 import AlertPanel from "../components/AlertPanel";
 import Notification from "../components/Notification";
@@ -13,25 +13,32 @@ export default function CryptoMonitor() {
   const [notification, setNotification] = useState(null);
   const notifTimer = useRef(null);
 
-  // Estudante A: atualiza preços a cada 5 segundos
   useEffect(() => {
-    function update() {
-      setPrices((prev) => {
+    async function fetchPrices() {
+      try {
+        const ids = COINS.map((c) => c.id).join(",");
+        const res = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=brl`
+        );
+        const data = await res.json();
+
         const next = {};
         COINS.forEach((c) => {
-          next[c.id] = simulatePrice(prev[c.id]);
+          if (data[c.id]?.brl) next[c.id] = data[c.id].brl;
         });
-        return next;
-      });
-      setLastUpdated(new Date());
+        setPrices(next);
+        setLastUpdated(new Date());
+      } catch (err) {
+        console.error("Erro ao buscar preços:", err);
+      }
     }
 
-    update();
-    const interval = setInterval(update, 5000);
+    fetchPrices();
+    const interval = setInterval(fetchPrices, 30000); // a cada 30s (respeita limite da API)
     return () => clearInterval(interval);
   }, []);
 
-  // Estudante B: verifica alertas do localStorage a cada atualização
+
   useEffect(() => {
     const alerts = JSON.parse(localStorage.getItem("cryptoAlerts") || "{}");
     COINS.forEach((c) => {
@@ -40,6 +47,8 @@ export default function CryptoMonitor() {
         showNotification(
           `🔔 ${c.name} atingiu ${formatBRL(prices[c.id])} (meta: ${formatBRL(target)})`
         );
+        delete alerts[c.id];
+        localStorage.setItem("cryptoAlerts", JSON.stringify(alerts));
       }
     });
   }, [prices]);
@@ -80,7 +89,7 @@ const styles = {
     padding: "32px 16px",
     color: "#111",
   },
-  title:  { fontSize: 20, fontWeight: 600, marginBottom: 20 },
-  list:   { display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 },
+  title: { fontSize: 20, fontWeight: 600, marginBottom: 20 },
+  list: { display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 },
   status: { fontSize: 12, color: "#888", marginTop: 8 },
 };

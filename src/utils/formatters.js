@@ -7,6 +7,3 @@ export function formatBRL(value) {
   });
 }
 
-export function simulatePrice(prev) {
-  return prev * (1 + (Math.random() - 0.5) * 0.015);
-}
