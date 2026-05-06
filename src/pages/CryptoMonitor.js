@@ -74,13 +74,15 @@ export default function CryptoMonitor() {
       <Notification message={notification} />
       <AlertPanel onSave={showNotification} />
 
+      <button onClick={() => navigate("/historico")} style={styles.histBtn}>
+        Ver histórico
+      </button>
+
       {lastUpdated && (
         <p style={styles.status}>
           Atualizado em: {lastUpdated.toLocaleTimeString("pt-BR")}
         </p>
       )}
-
-
 
       <span
         onClick={() => navigate("/secrets")}
@@ -91,7 +93,7 @@ export default function CryptoMonitor() {
       </span>
     </div>
 
-    
+
   );
 }
 
@@ -103,6 +105,16 @@ const styles = {
     padding: "32px 16px",
     color: "#111",
   },
+
+  histBtn: {
+  fontSize: 13,
+  padding: "6px 14px",
+  border: "1px solid #ccc",
+  borderRadius: 8,
+  background: "#fff",
+  cursor: "pointer",
+  marginBottom: 16,
+},
   title: { fontSize: 20, fontWeight: 600, marginBottom: 20 },
   list: { display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 },
   status: { fontSize: 12, color: "#888", marginTop: 8 },
