@@ -4,6 +4,7 @@ import { formatBRL } from "../utils/formatters";
 import CoinCard from "../components/CoinCard";
 import AlertPanel from "../components/AlertPanel";
 import Notification from "../components/Notification";
+import { useNavigate } from "react-router-dom";
 
 export default function CryptoMonitor() {
   const [prices, setPrices] = useState(() =>
@@ -12,6 +13,7 @@ export default function CryptoMonitor() {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [notification, setNotification] = useState(null);
   const notifTimer = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchPrices() {
@@ -34,10 +36,9 @@ export default function CryptoMonitor() {
     }
 
     fetchPrices();
-    const interval = setInterval(fetchPrices, 30000); // a cada 30s (respeita limite da API)
+    const interval = setInterval(fetchPrices, 30000);
     return () => clearInterval(interval);
   }, []);
-
 
   useEffect(() => {
     const alerts = JSON.parse(localStorage.getItem("cryptoAlerts") || "{}");
@@ -60,36 +61,65 @@ export default function CryptoMonitor() {
   }
 
   return (
-    <div style={styles.app}>
-      <h1 style={styles.title}>Monitor de Criptoativos</h1>
+    <div className="min-h-screen bg-black text-white p-4 md:p-10 font-sans selection:bg-yellow-500 selection:text-black">
+      <div className="max-w-2xl mx-auto">
+        
+        {/* HEADER */}
+        <header className="flex flex-col md:flex-row justify-between items-end mb-10 border-l-4 border-yellow-500 pl-6 py-2">
+          <div>
+            <h1 className="text-4xl font-black uppercase tracking-tighter text-white">
+              EQUIPE<span className="text-yellow-500">_DELTA</span>
+            </h1>
+            <p className="text-zinc-500 text-sm font-bold tracking-[0.3em]">CRYPTO MONITORING</p>
+          </div>
+          
+          {lastUpdated && (
+            <div className="text-right">
+              <p className="text-zinc-600 text-[10px] font-bold uppercase italic">Sync Status: Online</p>
+              <p className="text-yellow-500 font-mono text-xl font-black">
+                {lastUpdated.toLocaleTimeString("pt-BR")}
+              </p>
+            </div>
+          )}
+        </header>
 
-      <div style={styles.list}>
-        {COINS.map((c) => (
-          <CoinCard key={c.id} coin={c} price={prices[c.id]} />
-        ))}
+        {/* LISTA DE CARDS - TEXTO PRETO GARANTIDO */}
+        <main className="space-y-4 mb-12">
+          {COINS.map((c) => (
+            <div 
+              key={c.id} 
+              className="bg-white rounded-xl border-2 border-zinc-800 p-1 hover:border-yellow-500 transition-all shadow-xl text-black"
+            >
+              <CoinCard coin={c} price={prices[c.id]} />
+            </div>
+          ))}
+        </main>
+
+        {/* PAINEL DE ALERTAS - CORRIGIDO PARA LETRAS PRETAS NAS OPÇÕES */}
+        <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+          <h2 className="text-yellow-500 font-black text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
+            <span className="w-8 h-[2px] bg-yellow-500"></span>
+            Configurar Alertas
+          </h2>
+          
+          {/* Este container abaixo força o texto de labels e inputs a ser PRETO */}
+          <div className="bg-white p-4 rounded-xl text-black font-bold">
+             <AlertPanel onSave={showNotification} />
+          </div>
+        </section>
+
+        <Notification message={notification} />
+
+        {/* FOOTER */}
+        <footer className="mt-20 text-center">
+          <button
+            onClick={() => navigate("/secrets")}
+            className="text-[10px] text-zinc-800 hover:text-red-700 font-mono uppercase transition-colors"
+          >
+            Terminal Root / No Access
+          </button>
+        </footer>
       </div>
-
-      <Notification message={notification} />
-      <AlertPanel onSave={showNotification} />
-
-      {lastUpdated && (
-        <p style={styles.status}>
-          Atualizado em: {lastUpdated.toLocaleTimeString("pt-BR")}
-        </p>
-      )}
     </div>
   );
 }
-
-const styles = {
-  app: {
-    fontFamily: "system-ui, sans-serif",
-    maxWidth: 480,
-    margin: "0 auto",
-    padding: "32px 16px",
-    color: "#111",
-  },
-  title: { fontSize: 20, fontWeight: 600, marginBottom: 20 },
-  list: { display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 },
-  status: { fontSize: 12, color: "#888", marginTop: 8 },
-};
