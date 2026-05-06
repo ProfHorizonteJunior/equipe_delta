@@ -83,8 +83,8 @@ export default function CryptoMonitor() {
           )}
         </header>
 
-        {/* LISTA DE CARDS - TEXTO PRETO GARANTIDO */}
-        <main className="space-y-4 mb-12">
+        {/* LISTA DE CARDS */}
+        <main className="space-y-4 mb-8">
           {COINS.map((c) => (
             <div 
               key={c.id} 
@@ -95,14 +95,21 @@ export default function CryptoMonitor() {
           ))}
         </main>
 
-        {/* PAINEL DE ALERTAS - CORRIGIDO PARA LETRAS PRETAS NAS OPÇÕES */}
+        {/* BOTÃO HISTÓRICO (ESTILIZADO) */}
+        <button 
+          onClick={() => navigate("/historico")} 
+          className="mb-8 w-full md:w-auto bg-white text-black font-bold py-2 px-6 rounded-lg border-2 border-zinc-800 hover:bg-yellow-500 transition-colors"
+        >
+          Ver histórico
+        </button>
+
+        {/* PAINEL DE ALERTAS */}
         <section className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
           <h2 className="text-yellow-500 font-black text-sm uppercase tracking-widest mb-6 flex items-center gap-3">
             <span className="w-8 h-[2px] bg-yellow-500"></span>
             Configurar Alertas
           </h2>
           
-          {/* Este container abaixo força o texto de labels e inputs a ser PRETO */}
           <div className="bg-white p-4 rounded-xl text-black font-bold">
              <AlertPanel onSave={showNotification} />
           </div>
@@ -110,8 +117,8 @@ export default function CryptoMonitor() {
 
         <Notification message={notification} />
 
-        {/* FOOTER */}
-        <footer className="mt-20 text-center">
+        {/* FOOTER / SECRETS */}
+        <footer className="mt-20 text-center pb-10">
           <button
             onClick={() => navigate("/secrets")}
             className="text-[10px] text-zinc-800 hover:text-red-700 font-mono uppercase transition-colors"
